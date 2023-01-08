@@ -1,0 +1,40 @@
+drop table if exists `prod-organize-arizon-4e1c0a83.viewers_dataset.MyCCanvassCountsPIMA`;
+create table `prod-organize-arizon-4e1c0a83.viewers_dataset.MyCCanvassCountsPIMA` as
+ 
+SELECT
+cc.DateCanvassed,
+u.FirstName, u.LastName,
+ct.ContactTypeName,
+count(Distinct cc.VanID) as Attempts,
+count(case when cc.ResultID = 14 then 1 else null end) as Canvassed,
+count(case when cc.ResultID = 1 then 1 else null end) as NotHome,
+count(case when cc.ResultID = 2 then 1 else null end) as Refused,
+count(case when cc.ResultID = 20 then 1 else null end) as WrongNumber,
+count(case when cc.ResultID = 17 then 1 else null end) as CallBack,
+count(case when cc.ResultID = 25 then 1 else null end) as Disconnected,
+count(case when cc.ResultID = 18  then 1 else null end) as Busy,
+count(case when cc.ResultID = 5 then 1 else null end) as Moved,
+count(case when cc.ResultID = 4 then 1 else null end) as Deceased,
+count(case when cc.ResultID = 6 then 1 else null end) as Spanish,
+count(case when cc.ResultID = 19 then 1 else null end) as LeftMessage,
+count(case when cc.ResultID = 21 then 1 else null end) as LitDropped,
+count(case when cc.ResultID = 41 then 1 else null end) as Hostile,
+count(case when cc.ResultID = 28 then 1 else null end) as LanguageBarrier,
+count(case when cc.ResultID = 111 then 1 else null end) as Texted
+ 
+from `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactsContacts` cc
+join `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_Users` u
+on cc.UserName = u.UserName
+join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactTypes` ct
+on
+cc.ContactTypeID = ct.ContactTypeID
+ 
+where cc.DateCanvassed >= '2022-06-15'
+ 
+and u.CanvasserName = 'LastName, FirstName'
+or u.CanvasserName = 'LastName, FirstName'
+ 
+group by  cc.DateCanvassed,
+u.FirstName, u.LastName,
+ct.ContactTypeName
