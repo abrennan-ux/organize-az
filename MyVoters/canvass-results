@@ -1,0 +1,84 @@
+drop table if exists `prod-organize-arizon-4e1c0a83.viewers_dataset.VFCanvassResultsPIMA`;
+create table `prod-organize-arizon-4e1c0a83.viewers_dataset.VFCanvassResultsPIMA` as
+ 
+SELECT
+ vfc.VanID,
+ vfc.DateCanvassed,
+ pu.Name,
+ r.ResultShortName,
+ co.FirstName,
+ co.LastName,
+ ct.ContactTypeName,
+ i.InputTypeName,
+ a.StreetNo,
+ a.StreetPrefix,
+ a.StreetName,
+ a.StreetSuffix,
+ a.City,
+ a.State,
+ a.Zip4,
+ p.county_name,
+ p.precinct_num
+ 
+from
+`prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactsContacts_VF` vfc
+join
+`prod-organize-arizon-4e1c0a83.viewers_dataset.Union_User_PublicUser` pu
+on
+vfc.CanvassedBy = pu.UserID
+ 
+left join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_Results` r
+on
+ vfc.ResultID = r.ResultID
+ 
+left join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_Contacts` co
+on
+vfc.VanID = co.VanID
+ 
+left join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactTypes` ct
+on
+vfc.ContactTypeID = ct.ContactTypeID
+ 
+left join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactsAddresses` a
+on
+vfc.VanID = a.VanID
+ 
+left join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_InputTypes` i
+on
+vfc.InputTypeID = i.InputTypeID
+ 
+left join
+`prod-organize-arizon-4e1c0a83.viewers_dataset.PrecinctNums` p
+on
+vfc.VanID = p.voter_file_vanid
+ 
+right join
+`prod-organize-arizon-4e1c0a83.viewers_dataset.TargetHouseHoldsPima` tp
+on
+vfc.VanID = tp.voter_file_vanid
+ 
+where vfc.DateCanvassed >= '2022-06-15'
+ 
+group by
+ vfc.VanID,
+ vfc.DateCanvassed,
+ pu.Name,
+ r.ResultShortName,
+ co.FirstName,
+ co.LastName,
+ ct.ContactTypeName,
+ i.InputTypeName,
+ a.StreetNo,
+ a.StreetPrefix,
+ a.StreetName,
+ a.StreetSuffix,
+ a.City,
+ a.State,
+ a.Zip4,
+ p.county_name,
+ p.precinct_num
