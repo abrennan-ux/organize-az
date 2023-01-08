@@ -1,0 +1,40 @@
+drop table if exists `prod-organize-arizon-4e1c0a83.viewers_dataset.Week0_3Pima`;
+create table `prod-organize-arizon-4e1c0a83.viewers_dataset.Week0_3Pima` as
+ 
+SELECT
+pu.DateCanvassed, pu.Name, pu.PhoneAttempts as PhoneAttempts, pu.PhoneCanvassed as PhoneCanvassed,
+case when pu.Name = "LastName, FirstName"
+     or pu.Name = "LastName, FirstName"
+     then "Name's Team"
+when pu.Name =  "LastName, FirstName"
+     or pu.Name = "LastName, FirstName"
+     then "Name's Team"
+when pu.Name =  "LastName, FirstName"
+     or pu.Name = "LastName, FirstName"
+     then "Name's Team"
+else null end as Team
+ 
+FROM
+`prod-organize-arizon-4e1c0a83.viewers_dataset.Week0_2Pima` pu
+ 
+ 
+union all
+SELECT
+pc.DateCanvassed, pc.Name,
+pc.PhoneAttempts as PhoneAttempts,
+pc.PhoneCanvassed as PhoneCanvassed,
+case when pu.Name = "LastName, FirstName"
+     or pu.Name = "LastName, FirstName"
+     then "Name's Team"
+when pu.Name =  "LastName, FirstName"
+     or pu.Name = "LastName, FirstName"
+     then "Name's Team"
+when pu.Name =  "LastName, FirstName"
+     or pu.Name = "LastName, FirstName"
+     then "Name's Team"
+else null end as Team
+ 
+FROM
+`prod-organize-arizon-4e1c0a83.viewers_dataset.Week0_1MyC` pc
+ 
+where pc.DateCanvassed between '2022-10-31T00:00:00' and '2022-11-09T00:00:00'
