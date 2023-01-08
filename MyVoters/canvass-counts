@@ -1,0 +1,49 @@
+drop table if exists `prod-organize-arizon-4e1c0a83.viewers_dataset.VFCanvassCountsPIMA`;
+create table `prod-organize-arizon-4e1c0a83.viewers_dataset.VFCanvassCountsPIMA` as
+ 
+SELECT
+vfc.DateCanvassed,
+pu.Name,
+ct.ContactTypeName,
+count(Distinct vfc.VanID) as Attempts,
+count(case when vfc.ResultID = 14 then 1 else null end) as Canvassed,
+count(case when vfc.ResultID = 1 then 1 else null end) as NotHome,
+count(case when vfc.ResultID = 2 then 1 else null end) as Refused,
+count(case when vfc.ResultID = 20 then 1 else null end) as WrongNumber,
+count(case when vfc.ResultID = 17 then 1 else null end) as CallBack,
+count(case when vfc.ResultID = 25 then 1 else null end) as Disconnected,
+count(case when vfc.ResultID = 18  then 1 else null end) as Busy,
+count(case when vfc.ResultID = 5 then 1 else null end) as Moved,
+count(case when vfc.ResultID = 3 then 1 else null end) as Inaccessible,
+count(case when vfc.ResultID = 4 then 1 else null end) as Deceased,
+count(case when vfc.ResultID = 6 then 1 else null end) as Spanish,
+count(case when vfc.ResultID = 19 then 1 else null end) as LeftMessage,
+count(case when vfc.ResultID = 21 then 1 else null end) as LitDropped,
+count(case when vfc.ResultID = 41 then 1 else null end) as Hostile,
+count(case when vfc.ResultID = 40 then 1 else null end) as NoSuchAddress,
+count(case when vfc.ResultID = 28 then 1 else null end) as LanguageBarrier,
+count(case when vfc.ResultID = 111 then 1 else null end) as Texted
+ 
+from
+`prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactsContacts_VF` vfc
+join
+`prod-organize-arizon-4e1c0a83.viewers_dataset.Union_User_PublicUser` pu
+on
+vfc.CanvassedBy = pu.UserID
+ 
+join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactTypes` ct
+ on
+vfc.ContactTypeID = ct.ContactTypeID
+ 
+right join
+`prod-organize-arizon-4e1c0a83.viewers_dataset.TargetHouseHoldsPima` tp
+on
+vfc.VanID = tp.voter_file_vanid
+ 
+ where vfc.DateCanvassed >= '2022-06-15'
+ 
+ 
+group by  vfc.DateCanvassed,
+pu.Name,
+ct.ContactTypeName
