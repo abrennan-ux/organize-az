@@ -1,0 +1,52 @@
+drop table if exists `prod-organize-arizon-4e1c0a83.viewers_dataset.ToDateACsPIMA`;
+create table `prod-organize-arizon-4e1c0a83.viewers_dataset.ToDateACsPIMA` as
+ 
+SELECT
+vfc.DateCanvassed,
+pu.Name,
+pn.county_name,
+pn.precinct_num,
+ct.ContactTypeName,
+ac.ActivistCodeName, d.Party, d.Age, d.Sex, d.AgeRange
+ 
+from
+`prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactsContacts_VF` vfc
+join
+`prod-organize-arizon-4e1c0a83.viewers_dataset.Union_User_PublicUser` pu
+on
+vfc.CanvassedBy = pu.UserID
+ 
+join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactTypes` ct
+ on
+vfc.ContactTypeID = ct.ContactTypeID
+ 
+join
+`prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactsActivistCodes_VF` cac
+on
+vfc.VanID = cac.VanID
+ 
+join
+`prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ActivistCodes` ac
+on
+cac.ActivistCodeID = ac.ActivistCodeID
+ 
+right join
+`prod-organize-arizon-4e1c0a83.viewers_dataset.TargetHouseHoldsPima` tp
+on
+vfc.VanID = tp.voter_file_vanid
+ 
+join
+`prod-organize-arizon-4e1c0a83.viewers_dataset.PrecinctNums` pn
+on
+vfc.VanID = pn.voter_file_vanid
+ 
+join
+`prod-organize-arizon-4e1c0a83.viewers_dataset.PimaTargetsData` d
+on vfc.VanID = d.VanID
+ 
+where cac.DateCanvassed >= '2022-06-15'
+ 
+group by  vfc.DateCanvassed,
+pu.Name, pn.county_name, pn.precinct_num,
+ct.ContactTypeName, ac.ActivistCodeName, d.Party, d.Age, d.Sex, d.AgeRange
