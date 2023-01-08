@@ -1,0 +1,37 @@
+drop table if exists `prod-organize-arizon-4e1c0a83.viewers_dataset.MyCCanvassResultsPIMA`;
+create table `prod-organize-arizon-4e1c0a83.viewers_dataset.MyCCanvassResultsPIMA` as
+ 
+SELECT
+ c.DateCanvassed, u.CanvasserName, c.VanID, co.FirstName, co.LastName, r.ResultShortName, ct.ContactTypeName, a.Latitude, a.Longitude, a.StreetNo, a.StreetPrefix, a.StreetName, a.StreetSuffix, a.City, a.State, a.Zip4,
+ 
+FROM
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactsContacts` c
+left join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_Users` u
+on
+ c.UserName = u.UserName
+left join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_Results` r
+on
+ c.ResultID = r.ResultID
+left join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_Contacts` co
+on
+c.VanID = co.VanID
+left join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactTypes` ct
+on
+c.ContactTypeID = ct.ContactTypeID
+left join
+ `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_ContactsAddresses` a
+on
+c.VanID = a.VanID
+ 
+ where c.DateCanvassed >= '2022-06-15'
+ 
+and u.CanvasserName = 'LastName, First Name'
+or u.CanvasserName = 'LastName, First Name'
+ 
+ 
+group by
+ c.DateCanvassed, c.CanvassedBy, c.ContactTypeID, u.CanvasserName, c.UserName, c.VanID, c.ResultID, r.ResultShortName, co.FirstName, co.LastName, ct.ContactTypeName, a.Latitude, a.Longitude, a.StreetNo, a.StreetPrefix, a.StreetName, a.StreetSuffix, a.City, a.State, a.Zip4
