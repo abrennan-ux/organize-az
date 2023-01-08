@@ -1,0 +1,19 @@
+drop table if exists `prod-organize-arizon-4e1c0a83.viewers_dataset.MyCEvents`;
+create table `prod-organize-arizon-4e1c0a83.viewers_dataset.MyCEvents` as
+ 
+SELECT e.EventCalendarName, e.EventName, e.EventDescription, e.DateOffsetBegin, e.DateCreated, u.FirstName, u.LastName, c.FirstName as VolFirstName, c.LastName as VolLastName, ss.EventStatusName, LEFT(e.DateOffsetBegin, 10) as EventDate, s.DateModified, u.CanvasserName, s.CreatedByUser
+ 
+FROM `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_Events` e
+join `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_Users` u
+on e.CreatedBy = u.UserID
+ 
+join `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_EventSignups` s
+on e.EventID = s.EventID
+ 
+join `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_EventSignupsStatuses` ss
+on s.EventSignupID = ss.EventSignupID
+ 
+join `prod-organize-arizon-4e1c0a83.ngpvan.CTARAA_Contacts` c
+on s.VanID = c.VanID
+ 
+where e.DateCreated >= '2022-06-15'
